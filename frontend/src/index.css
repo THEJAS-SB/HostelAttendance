@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @media (max-width: 500px) {
+    table {
+      font-size: 12px;
+    }
+    td,
+    th {
+      padding: 4px;
+    }
+  }
+}
