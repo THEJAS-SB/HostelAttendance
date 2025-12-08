@@ -59,22 +59,17 @@ export default function Notifications() {
   return (
     <div className="min-h-screen p-6 bg-gray-100">
       <div className="max-w-6xl mx-auto bg-white p-6 rounded-2xl shadow-lg">
+
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-blue-600">Notifications</h2>
           <div className="flex gap-3">
             <button
               onClick={() => navigate("/warden-dashboard")}
-              className={
-                location.pathname === "/warden-dashboard"
-                  ? "px-4 py-2 rounded-lg font-semibold bg-blue-600 text-white"
-                  : "px-4 py-2 rounded-lg font-semibold bg-gray-200 text-gray-700"
-              }
+              className="px-4 py-2 rounded-lg font-semibold bg-gray-200 text-gray-700"
             >
               Attendance
             </button>
-            <button
-              className="px-4 py-2 rounded-lg font-semibold bg-blue-600 text-white"
-            >
+            <button className="px-4 py-2 rounded-lg font-semibold bg-blue-600 text-white">
               Notifications
             </button>
           </div>
@@ -92,6 +87,7 @@ export default function Notifications() {
               <tr className="bg-gray-200 text-center font-semibold">
                 <th className="p-2">Reg No</th>
                 <th className="p-2">Name</th>
+                <th className="p-2">Dept</th>
                 <th className="p-2">Current Room</th>
                 <th className="p-2">Requested Room</th>
                 <th className="p-2">Action</th>
@@ -102,6 +98,7 @@ export default function Notifications() {
                 <tr key={r._id} className="text-center border-t">
                   <td className="p-2">{r.regNo}</td>
                   <td className="p-2">{r.name}</td>
+                  <td className="p-2">{r.dept}</td>
                   <td className="p-2">{r.currentRoom}</td>
                   <td className="p-2">{r.newRoom}</td>
                   <td className="p-2 flex gap-2 justify-center">
@@ -130,6 +127,7 @@ export default function Notifications() {
         >
           Logout
         </button>
+
       </div>
     </div>
   )

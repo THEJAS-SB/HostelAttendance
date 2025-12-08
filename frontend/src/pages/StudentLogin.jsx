@@ -23,33 +23,65 @@ export default function StudentLogin() {
   }
 
   return (
-    <div className="h-screen flex justify-center items-center bg-gray-200">
-      <div className="bg-white p-8 shadow-xl rounded-2xl w-80">
-        <h2 className="text-xl font-bold mb-4 text-blue-700">Student Login</h2>
-        <input
-          type="text"
-          placeholder="Register Number"
-          value={regNo}
-          onChange={(e) => setRegNo(e.target.value.toUpperCase())}
-          className="border p-2 w-full rounded mb-3"
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          className="border p-2 w-full rounded mb-3"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+    <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-blue-50 to-blue-100 p-6">
+
+      {/* Main Card */}
+      <div className="bg-white w-full max-w-md p-10 rounded-2xl shadow-xl border border-blue-100">
+
+        {/* Title */}
+        <h2 className="text-3xl font-extrabold mb-6 text-blue-700 text-center">
+          Student Login
+        </h2>
+
+        {/* Register Number */}
+        <div className="mb-4">
+          <label className="text-gray-700 font-medium text-sm">Register Number</label>
+          <div className="flex items-center gap-3 mt-1 border rounded-xl p-3 shadow-sm bg-gray-50">
+            <div className="p-2 rounded-md bg-blue-100 text-blue-700">🎓</div>
+            <input
+              type="text"
+              placeholder="Enter Register Number"
+              value={regNo}
+              onChange={(e) => setRegNo(e.target.value.toUpperCase())}
+              className="bg-transparent flex-1 outline-none"
+            />
+          </div>
+        </div>
+
+        {/* Password */}
+        <div className="mb-6">
+          <label className="text-gray-700 font-medium text-sm">Password</label>
+          <div className="flex items-center gap-3 mt-1 border rounded-xl p-3 shadow-sm bg-gray-50">
+            <div className="p-2 rounded-md bg-blue-100 text-blue-700">🔑</div>
+            <input
+              type="password"
+              placeholder="Enter Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="bg-transparent flex-1 outline-none"
+            />
+          </div>
+        </div>
+
+        {/* Login Button */}
         <button
           onClick={submit}
-          className="w-full bg-blue-600 text-white py-2 rounded"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl shadow-lg transition-all text-lg font-semibold"
         >
           Login
         </button>
-        {msg && <p className="mt-3 text-red-600">{msg}</p>}
-        <p className="text-sm mt-3 text-center">
+
+        {/* Error Message */}
+        {msg && (
+          <p className="mt-4 text-red-600 text-center font-medium">
+            {msg}
+          </p>
+        )}
+
+        {/* Register Link */}
+        <p className="text-sm mt-5 text-center text-gray-700">
           No account?{" "}
-          <Link to="/student-register" className="text-blue-600 underline">
+          <Link to="/student-register" className="text-blue-600 font-bold">
             Register
           </Link>
         </p>

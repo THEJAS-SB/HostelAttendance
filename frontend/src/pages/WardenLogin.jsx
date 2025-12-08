@@ -23,30 +23,50 @@ export default function WardenLogin() {
   }
 
   return (
-    <div className="h-screen flex justify-center items-center bg-gray-200">
-      <div className="bg-white p-8 shadow-xl rounded-xl w-80">
-        <h2 className="text-xl font-bold mb-5 text-green-700">Warden Login</h2>
-        <input
-          type="email"
-          placeholder="Email"
-          className="border p-2 w-full rounded mb-3"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          className="border p-2 w-full rounded mb-3"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex justify-center items-center p-6">
+      
+      <div className="bg-white p-8 rounded-2xl shadow-xl border border-green-100 w-full max-w-md">
+
+        <h2 className="text-3xl font-extrabold text-green-700 text-center mb-6">
+          Warden Login
+        </h2>
+
+        {/* Email Field */}
+        <div className="flex items-center gap-3 border rounded-xl p-3 bg-green-50 shadow-sm mb-4">
+          <div className="p-2 rounded-md bg-green-100 text-green-700">📧</div>
+          <input
+            type="email"
+            placeholder="Enter Email"
+            className="flex-1 outline-none bg-transparent"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+
+        {/* Password Field */}
+        <div className="flex items-center gap-3 border rounded-xl p-3 bg-green-50 shadow-sm mb-4">
+          <div className="p-2 rounded-md bg-green-100 text-green-700">🔒</div>
+          <input
+            type="password"
+            placeholder="Enter Password"
+            className="flex-1 outline-none bg-transparent"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+
+        {/* Login Button */}
         <button
           onClick={submit}
-          className="w-full bg-green-600 text-white py-2 rounded"
+          className="w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl shadow font-semibold"
         >
           Login
         </button>
-        {msg && <p className="mt-3 text-red-600">{msg}</p>}
+
+        {msg && (
+          <p className="mt-4 text-center text-red-600 font-medium">{msg}</p>
+        )}
+
       </div>
     </div>
   )

@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
   parentMobile: String,
   studentMobile: String,
   roomNo: String,
+  dept: { type: String, required: true },
   passwordHash: { type: String, required: true },
   role: { type: String, required: true }
 })
