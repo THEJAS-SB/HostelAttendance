@@ -10,7 +10,7 @@ export default function WardenLogin() {
 
   const submit = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/api/login", {
+      const res = await axios.post("https://hostelattendance-egok.onrender.com/api/login", {
         regNo: email,
         password
       })

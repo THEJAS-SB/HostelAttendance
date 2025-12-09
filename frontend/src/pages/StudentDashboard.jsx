@@ -33,13 +33,13 @@ export default function StudentDashboard() {
   });
 
   const loadUser = async () => {
-    const res = await axios.get("http://localhost:5000/api/me", getAuth());
+    const res = await axios.get("https://hostelattendance-egok.onrender.com/api/me", getAuth());
     setUser(res.data);
   };
 
   const loadRoomPending = async () => {
     const res = await axios.get(
-      "http://localhost:5000/api/student/room-change-status",
+      "https://hostelattendance-egok.onrender.com/api/student/room-change-status",
       getAuth()
     );
     setRoomPending(res.data.pending);
@@ -48,7 +48,7 @@ export default function StudentDashboard() {
 
   const loadNotification = async () => {
     const res = await axios.get(
-      "http://localhost:5000/api/student/room-change-notification",
+      "https://hostelattendance-egok.onrender.com/api/student/room-change-notification",
       getAuth()
     );
     if (res.data.hasNotification) {
@@ -63,7 +63,7 @@ export default function StudentDashboard() {
 
   const closeNotification = async () => {
     await axios.post(
-      "http://localhost:5000/api/student/room-change-notification/clear",
+      "https://hostelattendance-egok.onrender.com/api/student/room-change-notification/clear",
       {},
       getAuth()
     );
@@ -76,7 +76,7 @@ export default function StudentDashboard() {
   const mark = async (status) => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/attendance/mark",
+        "https://hostelattendance-egok.onrender.com/api/attendance/mark",
         { status },
         getAuth()
       );
@@ -94,7 +94,7 @@ export default function StudentDashboard() {
     }
     try {
       await axios.post(
-        "http://localhost:5000/api/student/room-change-request",
+        "https://hostelattendance-egok.onrender.com/api/student/room-change-request",
         { newRoom },
         getAuth()
       );

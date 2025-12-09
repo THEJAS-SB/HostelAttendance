@@ -25,7 +25,7 @@ export default function StudentRegister() {
     }
 
     try {
-      await axios.post("http://localhost:5000/api/student/register", {
+      await axios.post("https://hostelattendance-egok.onrender.com/api/student/register", {
         regNo,
         name,
         parentMobile,

@@ -41,7 +41,7 @@ export default function WardenDashboard() {
   const fetchData = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/admin/report?date=${date}`,
+        `https://hostelattendance-egok.onrender.com/api/admin/report?date=${date}`,
         getAuth()
       );
 
@@ -64,7 +64,7 @@ export default function WardenDashboard() {
   const fetchRequests = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/admin/room-requests",
+        "https://hostelattendance-egok.onrender.com/api/admin/room-requests",
         getAuth()
       );
       setPendingReq(res.data);
@@ -74,7 +74,7 @@ export default function WardenDashboard() {
   const acceptRequest = async (id) => {
     try {
       await axios.post(
-        `http://localhost:5000/api/admin/room-requests/${id}/approve`,
+        `https://hostelattendance-egok.onrender.com/api/admin/room-requests/${id}/approve`,
         {},
         getAuth()
       );
@@ -86,7 +86,7 @@ export default function WardenDashboard() {
   const rejectRequest = async (id) => {
     try {
       await axios.post(
-        `http://localhost:5000/api/admin/room-requests/${id}/reject`,
+        `https://hostelattendance-egok.onrender.com/api/admin/room-requests/${id}/reject`,
         {},
         getAuth()
       );

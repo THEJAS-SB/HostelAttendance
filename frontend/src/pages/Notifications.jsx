@@ -26,7 +26,7 @@ export default function Notifications() {
   const fetchRequests = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/admin/room-requests?status=pending",
+        "https://hostelattendance-egok.onrender.com/api/admin/room-requests?status=pending",
         getAuth()
       )
       setRequests(res.data)
@@ -35,7 +35,7 @@ export default function Notifications() {
 
   const approve = async (id) => {
     await axios.post(
-      `http://localhost:5000/api/admin/room-requests/${id}/approve`,
+      `https://hostelattendance-egok.onrender.com/api/admin/room-requests/${id}/approve`,
       {},
       getAuth()
     )
@@ -44,7 +44,7 @@ export default function Notifications() {
 
   const reject = async (id) => {
     await axios.post(
-      `http://localhost:5000/api/admin/room-requests/${id}/reject`,
+      `https://hostelattendance-egok.onrender.com/api/admin/room-requests/${id}/reject`,
       {},
       getAuth()
     )
