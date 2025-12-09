@@ -12,7 +12,19 @@ import { authMiddleware } from "./middleware/auth.js"
 
 dotenv.config()
 const app = express()
-app.use(cors())
+
+// FIXED CORS 🚀
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://ts-technovate-hostelattendance.vercel.app"
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
 app.use(express.json())
 
 // DB Connect
@@ -268,6 +280,13 @@ cron.schedule("1 22 * * *", async () => {
   console.log("Auto-absent updated ✔")
 })
 
+// ROOT CHECK ✔
+app.get("/", (req, res) => {
+  res.send("API Running... 🚀")
+})
+
 // SERVER
 const PORT = process.env.PORT || 5000
-app.listen(PORT, () => console.log(`Backend Running on ${PORT}`))
+app.listen(PORT, () =>
+  console.log(`Backend Running on PORT ${PORT}`)
+)
