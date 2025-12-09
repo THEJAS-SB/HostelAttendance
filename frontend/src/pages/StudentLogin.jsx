@@ -66,7 +66,22 @@ export default function StudentLogin() {
         {/* Login Button */}
         <button
           onClick={submit}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl shadow-lg transition-all text-lg font-semibold"
+          className="
+w-full 
+bg-blue-600 
+hover:bg-blue-700 
+text-white 
+py-3 
+rounded-xl 
+text-lg font-semibold
+shadow-lg shadow-blue-500/40 
+hover:shadow-blue-500/60
+hover:scale-[1.04] 
+active:scale-[0.97]
+border border-blue-400/30
+transition-all duration-300
+"
+
         >
           Login
         </button>

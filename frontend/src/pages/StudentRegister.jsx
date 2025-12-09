@@ -128,7 +128,23 @@ export default function StudentRegister() {
 
         <button
           onClick={submit}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl shadow"
+          className="
+w-full
+bg-blue-600
+hover:bg-blue-700
+text-white
+py-3
+rounded-xl
+text-lg font-semibold
+shadow-lg shadow-blue-500/40
+hover:shadow-blue-500/70
+hover:scale-[1.05]
+active:scale-[0.97]
+border border-blue-400/40
+backdrop-blur-sm
+transition-all duration-300
+"
+
         >
           Register
         </button>

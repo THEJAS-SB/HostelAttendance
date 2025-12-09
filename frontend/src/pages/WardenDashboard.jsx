@@ -112,12 +112,6 @@ export default function WardenDashboard() {
     navigate("/warden-login");
   };
 
-  const totalStudents = records.length;
-  const totalPresent = records.filter((r) => r.status === "present").length;
-  const totalAbsent = records.filter(
-    (r) => r.status === "absent" || r.status === "not_responded_absent"
-  ).length;
-
   const rooms = {};
   records.forEach((s) => {
     const room = s.roomNo || "No Room";
@@ -223,63 +217,84 @@ export default function WardenDashboard() {
       <div className="max-w-6xl mx-auto">
         <div className="bg-white p-6 rounded-2xl shadow-lg relative">
 
-          <div className="relative flex justify-end items-center gap-4 mb-4" ref={notifRef}>
-            <button
-              onClick={() => setNotifOpen(!notifOpen)}
-              className="relative p-3 rounded-full bg-gray-100 hover:bg-gray-200"
-            >
-              🔔
-              {pendingCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs px-2 py-0.5 rounded-full">
-                  {pendingCount}
-                </span>
-              )}
-            </button>
+          {/* HEADER WITH LOGO + NOTIFICATION + LOGOUT */}
+          <div className="flex justify-between items-center mb-10 px-2">
+            <h1 className="text-3xl font-bold tracking-wide relative">
+  <span className="text-blue-600 relative
+    after:content-[''] after:absolute after:inset-0
+    after:blur-2xl after:bg-blue-400/40 after:-z-10">
+    TS Technovate
+  </span>
+  <span className="text-black ml-2">Warden Dashboard</span>
+</h1>
 
-            <button
-              onClick={logout}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg font-semibold shadow hover:bg-red-700"
-            >
-              Logout
-            </button>
 
-            {notifOpen && (
-              <div className="absolute right-0 mt-12 w-80 bg-white rounded-xl shadow-xl border p-4 z-50">
-                <h3 className="text-lg font-semibold mb-2">Room Change Requests</h3>
 
-                {pendingReq.length === 0 ? (
-                  <p className="text-gray-500 text-sm">No requests</p>
-                ) : (
-                  pendingReq.map((req) => (
-                    <div key={req._id} className="p-3 border rounded-lg mb-2 bg-gray-50">
-                      <div className="font-semibold">{req.name} ({req.regNo})</div>
-                      {/* Dept Display */}
-                      <div className="text-sm text-gray-600">Dept: {req.dept}</div>
-                      <div className="text-sm text-gray-600">
-                        Room Change: {req.currentRoom} → {req.newRoom}
-                      </div>
-                      <div className="mt-2 flex gap-2">
-                        <button
-                          onClick={() => acceptRequest(req._id)}
-                          className="flex-1 bg-green-600 text-white py-1 rounded"
-                        >
-                          Accept
-                        </button>
-                        <button
-                          onClick={() => rejectRequest(req._id)}
-                          className="flex-1 bg-red-600 text-white py-1 rounded"
-                        >
-                          Reject
-                        </button>
-                      </div>
-                    </div>
-                  ))
+
+
+            <div className="flex items-center gap-4" ref={notifRef}>
+              {/* Notification Button */}
+              <button
+                onClick={() => setNotifOpen(!notifOpen)}
+                className="relative p-3 rounded-full bg-gray-100 hover:bg-gray-200
+                           shadow hover:shadow-md transition-all"
+              >
+                🔔
+                {pendingCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs px-2 py-0.5 rounded-full">
+                    {pendingCount}
+                  </span>
                 )}
-              </div>
-            )}
+              </button>
+
+              {/* Logout Button Styled Like CSV Buttons */}
+              <button
+                onClick={logout}
+                className="px-5 py-2 rounded-xl bg-red-600 text-white font-semibold
+                           shadow-md hover:shadow-lg hover:bg-red-700 
+                           transition-all transform hover:-translate-y-1"
+              >
+                Logout
+              </button>
+
+              {/* Dropdown Notification Panel */}
+              {notifOpen && (
+                <div className="absolute right-0 mt-16 w-80 bg-white rounded-xl shadow-xl border p-4 z-50">
+                  <h3 className="text-lg font-semibold mb-2">Room Change Requests</h3>
+
+                  {pendingReq.length === 0 ? (
+                    <p className="text-gray-500 text-sm">No requests</p>
+                  ) : (
+                    pendingReq.map((req) => (
+                      <div key={req._id} className="p-3 border rounded-lg mb-2 bg-gray-50">
+                        <div className="font-semibold">{req.name} ({req.regNo})</div>
+                        <div className="text-sm text-gray-600">Dept: {req.dept}</div>
+                        <div className="text-sm text-gray-600">
+                          Room Change: {req.currentRoom} → {req.newRoom}
+                        </div>
+                        <div className="mt-2 flex gap-2">
+                          <button
+                            onClick={() => acceptRequest(req._id)}
+                            className="flex-1 bg-green-600 text-white py-1 rounded"
+                          >
+                            Accept
+                          </button>
+                          <button
+                            onClick={() => rejectRequest(req._id)}
+                            className="flex-1 bg-red-600 text-white py-1 rounded"
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Summary */}
+          {/* Search + Date */}
           <div className="flex items-center gap-4 mb-6">
             <div className="flex-1">
               <input
@@ -287,7 +302,8 @@ export default function WardenDashboard() {
                 placeholder="Search Room, Name, Dept..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full border rounded-full py-3 px-4 shadow-sm"
+                className="w-full rounded-full py-3 px-4 border border-gray-500 shadow-sm focus:outline-none focus:ring-2 focus:ring-black-500/40"
+
               />
             </div>
 
@@ -302,22 +318,52 @@ export default function WardenDashboard() {
 
           {msg && <div className="text-red-600 text-center mb-3">{msg}</div>}
 
-          {/* CSV Download */}
-          <div className="grid grid-cols-2 gap-3 mb-6">
-            <button onClick={downloadAttendanceCSV} className="px-6 py-3 rounded-lg bg-blue-600 text-white font-medium">
-              Attendance CSV
+          {/* NEW DYNAMIC CSV UI */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+
+            <button
+              onClick={downloadAttendanceCSV}
+              className="w-full py-4 rounded-xl bg-blue-600 text-white font-semibold
+                         shadow-md hover:shadow-lg hover:bg-blue-700 
+                         transition-all duration-300 transform hover:-translate-y-1
+                         flex items-center justify-center gap-3"
+            >
+              📋 Attendance CSV
             </button>
-            <button onClick={downloadStudentListCSV} className="px-6 py-3 rounded-lg bg-purple-600 text-white font-medium">
-              Student List CSV
+
+            <button
+              onClick={downloadStudentListCSV}
+              className="w-full py-4 rounded-xl bg-purple-600 text-white font-semibold
+                         shadow-md hover:shadow-lg hover:bg-purple-700
+                         transition-all duration-300 transform hover:-translate-y-1
+                         flex items-center justify-center gap-3"
+            >
+              🧑‍🎓 Student List CSV
             </button>
-            <button onClick={downloadPresentCSV} className="px-6 py-3 rounded-lg bg-green-600 text-white font-medium">
-              Present CSV
+
+            <button
+              onClick={downloadPresentCSV}
+              className="w-full py-4 rounded-xl bg-green-600 text-white font-semibold
+                         shadow-md hover:shadow-lg hover:bg-green-700
+                         transition-all duration-300 transform hover:-translate-y-1
+                         flex items-center justify-center gap-3"
+            >
+              ✅ Present CSV
             </button>
-            <button onClick={downloadAbsentCSV} className="px-6 py-3 rounded-lg bg-red-600 text-white font-medium">
-              Absent CSV
+
+            <button
+              onClick={downloadAbsentCSV}
+              className="w-full py-4 rounded-xl bg-red-600 text-white font-semibold
+                         shadow-md hover:shadow-lg hover:bg-red-700
+                         transition-all duration-300 transform hover:-translate-y-1
+                         flex items-center justify-center gap-3"
+            >
+              ❌ Absent CSV
             </button>
+
           </div>
 
+          {/* ROOMS */}
           {sortedRooms.map((room) => (
             <div key={room} className="bg-white border rounded-xl shadow-sm mb-4">
               <div className="flex justify-between items-center p-4 border-b">
@@ -342,7 +388,6 @@ export default function WardenDashboard() {
                     <div>
                       <div className="font-medium text-gray-800">{s.name}</div>
                       <div className="text-sm text-gray-500">{s.regNo}</div>
-                      {/* Dept shown here */}
                       <div className="text-sm text-gray-500">{s.dept}</div>
                     </div>
 

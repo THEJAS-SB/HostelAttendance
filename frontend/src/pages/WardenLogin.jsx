@@ -58,7 +58,21 @@ export default function WardenLogin() {
         {/* Login Button */}
         <button
           onClick={submit}
-          className="w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl shadow font-semibold"
+          className="
+w-full 
+bg-green-600 
+hover:bg-green-700 
+text-white 
+py-3 
+rounded-xl 
+text-lg font-semibold
+shadow-lg shadow-green-500/40 
+hover:shadow-green-500/60
+hover:scale-[1.04] 
+active:scale-[0.97]
+border border-green-400/30
+transition-all duration-300
+"
         >
           Login
         </button>

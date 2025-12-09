@@ -19,7 +19,20 @@ export default function Home() {
           {/* Student Login */}
           <a
             href="/student-login"
-            className="flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl shadow-lg transition-all"
+            className="
+flex items-center justify-center gap-3
+bg-blue-600 
+text-white 
+py-3 rounded-xl 
+shadow-lg shadow-blue-500/40 
+hover:shadow-blue-500/60 
+hover:bg-blue-700 
+hover:scale-[1.04] 
+active:scale-[0.97]
+border border-blue-400/30
+transition-all duration-300
+"
+
           >
             <div className="p-2 rounded-md bg-white/20">🎓</div>
             <span className="text-lg font-semibold">Student Login</span>
@@ -28,7 +41,21 @@ export default function Home() {
           {/* Warden Login */}
           <a
             href="/warden-login"
-            className="flex items-center justify-center gap-3 bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl shadow-lg transition-all"
+            className="
+flex items-center justify-center gap-3
+bg-green-600 
+text-white 
+py-3 rounded-xl 
+shadow-lg shadow-green-500/40 
+hover:shadow-green-500/60 
+hover:bg-green-700 
+hover:scale-[1.04] 
+active:scale-[0.97]
+border border-green-400/30
+transition-all duration-300
+"
+
+
           >
             <div className="p-2 rounded-md bg-white/20">🛂</div>
             <span className="text-lg font-semibold">Warden Login</span>
