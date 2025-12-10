@@ -7,7 +7,6 @@ import jwt from "jsonwebtoken"
 import cron from "node-cron"
 import { User } from "./models/User.js"
 import { Attendance } from "./models/Attendance.js"
-import { RoomChangeRequest } from "./models/RoomChangeRequest.js"
 import { authMiddleware } from "./middleware/auth.js"
 
 dotenv.config()
@@ -16,8 +15,10 @@ const app = express()
 // FIXED CORS 🚀
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://ts-technovate-hostelattendance.vercel.app"
+  "https://ts-technovate-hostelattendance.vercel.app", // frontend correct
+  "https://hostelattendance-egok.onrender.com" // backend itself (optional)
 ];
+
 
 app.use(cors({
   origin: allowedOrigins,
@@ -164,108 +165,7 @@ app.get("/api/admin/report", authMiddleware(["warden"]), async (req, res) => {
   res.json(data)
 })
 
-// ROOM CHANGE REQUEST
-app.post("/api/student/room-change-request", authMiddleware(["student"]), async (req, res) => {
-  const student = await User.findById(req.user.id)
-  if (student.roomNo === req.body.newRoom)
-    return res.status(400).json({ message: "Already same room" })
-
-  const pending = await RoomChangeRequest.findOne({
-    student: student._id,
-    status: "pending"
-  })
-  if (pending) return res.status(400).json({ message: "Already pending" })
-
-  await RoomChangeRequest.create({
-    student: student._id,
-    newRoom: req.body.newRoom,
-    status: "pending"
-  })
-  res.json({ message: "Request sent" })
-})
-
-// STUDENT STATUS
-app.get("/api/student/room-change-status", authMiddleware(["student"]), async (req, res) => {
-  const request = await RoomChangeRequest.findOne({
-    student: req.user.id,
-    status: "pending"
-  }).sort({ createdAt: -1 })
-
-  res.json({
-    pending: !!request,
-    newRoom: request ? request.newRoom : null
-  })
-})
-
-// STUDENT NOTIFICATION
-app.get("/api/student/room-change-notification", authMiddleware(["student"]), async (req, res) => {
-  const request = await RoomChangeRequest.findOne({
-    student: req.user.id,
-    status: { $in: ["approved", "rejected"] }
-  }).sort({ updatedAt: -1 })
-
-  if (!request) return res.json({ hasNotification: false })
-
-  res.json({
-    hasNotification: true,
-    status: request.status,
-    newRoom: request.newRoom
-  })
-})
-
-// CLEAR
-app.post("/api/student/room-change-notification/clear", authMiddleware(["student"]), async (req, res) => {
-  await RoomChangeRequest.deleteMany({
-    student: req.user.id,
-    status: { $in: ["approved", "rejected"] }
-  })
-  res.json({ message: "Cleared" })
-})
-
-// ADMIN VIEW REQUESTS
-app.get("/api/admin/room-requests", authMiddleware(["warden"]), async (req, res) => {
-  const list = await RoomChangeRequest.find({ status: "pending" })
-    .populate("student", "regNo name roomNo dept")
-    .sort({ createdAt: -1 })
-
-  res.json(list.map((r) => ({
-    _id: r._id,
-    regNo: r.student.regNo,
-    name: r.student.name,
-    currentRoom: r.student.roomNo,
-    newRoom: r.newRoom,
-    dept: r.student.dept,
-    status: r.status
-  })))
-})
-
-// APPROVE
-app.post("/api/admin/room-requests/:id/approve", authMiddleware(["warden"]), async (req, res) => {
-  const request = await RoomChangeRequest.findById(req.params.id)
-  if (!request) return res.status(404).json({ message: "Not found" })
-
-  const student = await User.findById(request.student)
-  student.roomNo = request.newRoom
-  await student.save()
-
-  request.status = "approved"
-  await request.save()
-
-  res.json({ message: "Approved" })
-})
-
-// REJECT
-app.post("/api/admin/room-requests/:id/reject", authMiddleware(["warden"]), async (req, res) => {
-  const request = await RoomChangeRequest.findById(req.params.id)
-  if (!request) return res.status(404).json({ message: "Not found" })
-
-  request.status = "rejected"
-  await request.save()
-
-  res.json({ message: "Rejected" })
-})
-
-// CRON (10:01PM AUTO-ABSENT)
+// CRON (AUTO ABSENT)
 cron.schedule("1 22 * * *", async () => {
   const date = getToday()
   const students = await User.find({ role: "student" })
