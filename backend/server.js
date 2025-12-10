@@ -15,9 +15,10 @@ const app = express()
 // FIXED CORS 🚀
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://ts-technovate-hostelattendance.vercel.app", // frontend correct
-  "https://hostelattendance-egok.onrender.com" // backend itself (optional)
+  "https://ts-technovate-hostelattendance.vercel.app",
+  "https://hostelattendance-egok.onrender.com"
 ];
+
 
 
 app.use(cors({
