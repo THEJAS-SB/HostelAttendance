@@ -1,42 +1,3 @@
-import express from "express"
-import mongoose from "mongoose"
-import cors from "cors"
-import dotenv from "dotenv"
-import bcrypt from "bcryptjs"
-import jwt from "jsonwebtoken"
-import cron from "node-cron"
-import { User } from "./models/User.js"
-import { Attendance } from "./models/Attendance.js"
-import { authMiddleware } from "./middleware/auth.js"
-
-dotenv.config()
-const app = express()
-
-// FIXED CORS 🚀
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://ts-technovate-hostelattendance.vercel.app",
-  "https://hostelattendance-egok.onrender.com"
-];
-
-
-
-app.use(cors({
-  origin: allowedOrigins,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-}));
-
-app.use(express.json())
-
-// DB Connect
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB Connected ✔"))
-  .catch((err) => console.log("DB Error:", err))
-
-const getToday = () => new Date().toISOString().split("T")[0]
-
 // REGISTER STUDENT
 app.post("/api/student/register", async (req, res) => {
   try {
@@ -47,8 +8,15 @@ app.post("/api/student/register", async (req, res) => {
       studentMobile,
       roomNo,
       dept,
-      password
+      password,
+      floor,
+      warden
     } = req.body
+
+    // VALIDATIONS
+    if (!regNo || !name || !password || !dept || !floor || !warden) {
+      return res.status(400).json({ message: "All fields are required" })
+    }
 
     if (!/^[A-Z]{2,5}-[A-Z]$/.test(dept)) {
       return res.status(400).json({ message: "Dept must be like CSE-D" })
@@ -59,11 +27,15 @@ app.post("/api/student/register", async (req, res) => {
     }
 
     const regUpper = regNo.toUpperCase()
+
     const exists = await User.findOne({ regNo: regUpper })
-    if (exists) return res.status(400).json({ message: "Already Registered!" })
+    if (exists) {
+      return res.status(400).json({ message: "Already Registered!" })
+    }
 
     const hash = await bcrypt.hash(password, 10)
 
+    // ✅ SAVE EVERYTHING (INCLUDING FLOOR & WARDEN)
     await User.create({
       regNo: regUpper,
       name,
@@ -71,6 +43,8 @@ app.post("/api/student/register", async (req, res) => {
       studentMobile,
       roomNo,
       dept,
+      floor,
+      warden,
       passwordHash: hash,
       role: "student"
     })
@@ -78,116 +52,7 @@ app.post("/api/student/register", async (req, res) => {
     res.json({ message: "Student Registered Successfully" })
 
   } catch (err) {
+    console.error(err)
     res.status(500).json({ message: "Register Failed" })
   }
 })
-
-// LOGIN
-app.post("/api/login", async (req, res) => {
-  try {
-    const { regNo, password } = req.body
-    let user
-
-    if (regNo.includes("@")) {
-      user = await User.findOne({ regNo, role: "warden" })
-    } else {
-      user = await User.findOne({ regNo: regNo.toUpperCase(), role: "student" })
-    }
-
-    if (!user) return res.status(404).json({ message: "User Not Found" })
-
-    const ok = await bcrypt.compare(password, user.passwordHash)
-    if (!ok) return res.status(401).json({ message: "Wrong Password" })
-
-    const token = jwt.sign(
-      { id: user._id, role: user.role, regNo: user.regNo },
-      process.env.JWT_SECRET,
-      { expiresIn: "24h" }
-    )
-
-    res.json({ message: "Logged In", token, role: user.role })
-  } catch {
-    res.status(500).json({ message: "Login Failed" })
-  }
-})
-
-// GET PROFILE
-app.get("/api/me", authMiddleware(["student", "warden"]), async (req, res) => {
-  const user = await User.findById(req.user.id).select("-passwordHash")
-  res.json(user)
-})
-
-// ATTENDANCE MARKING
-app.post("/api/attendance/mark", authMiddleware(["student"]), async (req, res) => {
-  const hour = new Date().getHours()
-  if (!(hour >= 19 && hour < 22))
-    return res.status(400).json({ message: "Attendance allowed only 7PM - 10PM" })
-
-  const date = getToday()
-  const record = await Attendance.findOneAndUpdate(
-    { student: req.user.id, date },
-    { status: req.body.status === "absent" ? "absent" : "present" },
-    { new: true, upsert: true }
-  )
-  res.json({ message: "Attendance updated", status: record.status })
-})
-
-// WARDEN REPORT
-app.get("/api/admin/report", authMiddleware(["warden"]), async (req, res) => {
-  const date = req.query.date || getToday()
-  const students = await User.find({ role: "student" })
-  const records = await Attendance.find({ date })
-  const recMap = new Map(records.map((r) => [String(r.student), r.status]))
-
-  const now = new Date()
-  const todayStr = getToday()
-  const hour = now.getHours()
-
-  const data = students.map((s) => {
-    const key = String(s._id)
-    let status = recMap.get(key)
-
-    if (!status) {
-      if (date < todayStr) status = "not_responded_absent"
-      else if (date > todayStr) status = "pending"
-      else status = hour >= 22 ? "not_responded_absent" : "pending"
-    }
-
-    return {
-      regNo: s.regNo,
-      name: s.name,
-      dept: s.dept,
-      roomNo: s.roomNo,
-      parentMobile: s.parentMobile,
-      studentMobile: s.studentMobile,
-      status
-    }
-  })
-  res.json(data)
-})
-
-// CRON (AUTO ABSENT)
-cron.schedule("1 22 * * *", async () => {
-  const date = getToday()
-  const students = await User.find({ role: "student" })
-  const records = await Attendance.find({ date })
-  const marked = new Set(records.map(r => String(r.student)))
-
-  for (const s of students) {
-    if (!marked.has(String(s._id))) {
-      await Attendance.create({ student: s._id, date, status: "absent" })
-    }
-  }
-  console.log("Auto-absent updated ✔")
-})
-
-// ROOT CHECK ✔
-app.get("/", (req, res) => {
-  res.send("API Running... 🚀")
-})
-
-// SERVER
-const PORT = process.env.PORT || 5000
-app.listen(PORT, () =>
-  console.log(`Backend Running on PORT ${PORT}`)
-)

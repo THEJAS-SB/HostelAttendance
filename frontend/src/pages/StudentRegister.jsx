@@ -10,7 +10,10 @@ export default function StudentRegister() {
   const [roomNo, setRoomNo] = useState("")
   const [dept, setDept] = useState("")
   const [password, setPassword] = useState("")
+  const [floor, setFloor] = useState("")
+  const [warden, setWarden] = useState("")
   const [msg, setMsg] = useState("")
+
   const navigate = useNavigate()
 
   const submit = async () => {
@@ -24,16 +27,27 @@ export default function StudentRegister() {
       return
     }
 
+    if (!floor || !warden) {
+      setMsg("Please select Floor and Warden")
+      return
+    }
+
     try {
-      await axios.post("https://hostelattendance-egok.onrender.com/api/student/register", {
-        regNo,
-        name,
-        parentMobile,
-        studentMobile,
-        roomNo,
-        dept,
-        password
-      })
+      await axios.post(
+  "https://hostelattendance-egok.onrender.com/api/student/register",
+  {
+    regNo,
+    name,
+    parentMobile,
+    studentMobile,
+    roomNo,
+    dept,
+    password,
+    floor,     // ✅ MUST be here
+    warden,    // ✅ MUST be here
+  }
+)
+
       navigate("/student-login")
     } catch (err) {
       setMsg(err.response?.data?.message || "Registration Failed")
@@ -48,6 +62,7 @@ export default function StudentRegister() {
           Student Register
         </h2>
 
+        {/* Reg No */}
         <div className="flex items-center gap-3 border rounded-xl p-3 bg-blue-50 shadow-sm mb-3">
           <div className="p-2 rounded-md bg-blue-100 text-blue-700">🆔</div>
           <input
@@ -59,6 +74,7 @@ export default function StudentRegister() {
           />
         </div>
 
+        {/* Name */}
         <div className="flex items-center gap-3 border rounded-xl p-3 bg-blue-50 shadow-sm mb-3">
           <div className="p-2 rounded-md bg-blue-100 text-blue-700">👤</div>
           <input
@@ -70,6 +86,8 @@ export default function StudentRegister() {
           />
         </div>
 
+        
+        {/* Parent Mobile */}
         <div className="flex items-center gap-3 border rounded-xl p-3 bg-blue-50 shadow-sm mb-3">
           <div className="p-2 rounded-md bg-blue-100 text-blue-700">📞</div>
           <input
@@ -81,6 +99,7 @@ export default function StudentRegister() {
           />
         </div>
 
+        {/* Student Mobile */}
         <div className="flex items-center gap-3 border rounded-xl p-3 bg-blue-50 shadow-sm mb-3">
           <div className="p-2 rounded-md bg-blue-100 text-blue-700">📱</div>
           <input
@@ -92,6 +111,7 @@ export default function StudentRegister() {
           />
         </div>
 
+        {/* Room No */}
         <div className="flex items-center gap-3 border rounded-xl p-3 bg-blue-50 shadow-sm mb-3">
           <div className="p-2 rounded-md bg-blue-100 text-blue-700">🏠</div>
           <input
@@ -103,7 +123,7 @@ export default function StudentRegister() {
           />
         </div>
 
-        {/* 🔥 Department Input Added */}
+        {/* Dept */}
         <div className="flex items-center gap-3 border rounded-xl p-3 bg-blue-50 shadow-sm mb-5">
           <div className="p-2 rounded-md bg-blue-100 text-blue-700">🏛️</div>
           <input
@@ -115,6 +135,7 @@ export default function StudentRegister() {
           />
         </div>
 
+        {/* Password */}
         <div className="flex items-center gap-3 border rounded-xl p-3 bg-blue-50 shadow-sm mb-5">
           <div className="p-2 rounded-md bg-blue-100 text-blue-700">🔒</div>
           <input
@@ -126,6 +147,37 @@ export default function StudentRegister() {
           />
         </div>
 
+        {/* Floor Dropdown */}
+        <div className="flex items-center gap-3 border rounded-xl p-3 bg-blue-50 shadow-sm mb-3">
+          <div className="p-2 rounded-md bg-blue-100 text-blue-700">🏢</div>
+          <select
+            value={floor}
+            onChange={(e) => setFloor(e.target.value)}
+            className="flex-1 outline-none bg-transparent"
+          >
+            <option value="">Select Floor</option>
+            {[1,2,3,4,5,6,7,8,9].map(f => (
+              <option key={f} value={f}>Floor {f}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Warden Dropdown */}
+        <div className="flex items-center gap-3 border rounded-xl p-3 bg-blue-50 shadow-sm mb-3">
+          <div className="p-2 rounded-md bg-blue-100 text-blue-700">🧑‍✈️</div>
+          <select
+            value={warden}
+            onChange={(e) => setWarden(e.target.value)}
+            className="flex-1 outline-none bg-transparent"
+          >
+            <option value="">Select Warden</option>
+            <option value="Saravana Kumar">Saravana Kumar</option>
+            <option value="Prabhu">Prabhu</option>
+          </select>
+        </div>
+
+
+        {/* Register */}
         <button
           onClick={submit}
           className="
@@ -141,10 +193,8 @@ hover:shadow-blue-500/70
 hover:scale-[1.05]
 active:scale-[0.97]
 border border-blue-400/40
-backdrop-blur-sm
 transition-all duration-300
 "
-
         >
           Register
         </button>
